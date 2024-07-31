@@ -71,7 +71,6 @@ pipeline {
     }
 
 
-
 post {
         success {
             slackSend(channel: env.SLACK_CHANNEL,
