@@ -1,13 +1,13 @@
+
 pipeline {
     agent any
 
     environment {
-            SLACK_CHANNEL = '#aplicación-de-eventos'
-            JOB_NAME = 'JOB_NAME'
-            BUILD_NUMBER = '1.0'
-            BUILD_URL = 'www.app-manage.com'
-        }
-
+        SLACK_CHANNEL = '#aplicacion-de-eventos'
+        JOB_NAME = "${env.JOB_NAME}"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        BUILD_URL = "${env.BUILD_URL}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -72,23 +72,31 @@ pipeline {
 
 
 
-     def COLOR_MAP = [
-         'SUCCESS': 'bueno',
-         'FAILURE': 'peligro'
-     ]
-
-     // Script de Notificación
-     post {
-         always {
-             echo 'Notificación a Slack'
-             slackSend channel: '#aplicación-de-eventos',
-                       color: COLOR_MAP[currentBuild.currentResult],
-                       message: "*${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}
-
-
-
-              Más información en: ${env.BUILD_URL}*"
-         }
-     }
+post {
+        success {
+            slackSend(channel: env.SLACK_CHANNEL,
+                      color: 'good',
+                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded. Check it out: ${env.BUILD_URL}",
+                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+        }
+        failure {
+            slackSend(channel: env.SLACK_CHANNEL,
+                      color: 'danger',
+                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed. Check it out: ${env.BUILD_URL}",
+                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+        }
+        unstable {
+            slackSend(channel: env.SLACK_CHANNEL,
+                      color: 'warning',
+                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' is unstable. Check it out: ${env.BUILD_URL}",
+                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+        }
+        always {
+            slackSend(channel: env.SLACK_CHANNEL,
+                      color: '#FFFF00',
+                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check it out: ${env.BUILD_URL}",
+                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+        }
+    }
 
 }
