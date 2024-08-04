@@ -7,6 +7,16 @@ pipeline {
         JOB_NAME = "${env.JOB_NAME}"
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
         BUILD_URL = "${env.BUILD_URL}"
+        NEXUS_VERSION = "nexus3"
+        // This can be http or https
+        NEXUS_PROTOCOL = "http"
+        // Where your Nexus is running
+        NEXUS_URL = "localhost:8081"
+        // Repository where we will upload the artifact
+        NEXUS_REPOSITORY = "mvn-repository"
+        // Jenkins credential id to authenticate to Nexus OSS
+        NEXUS_CREDENTIAL_ID = "Nexus_Password"
+        ARTIFACT_VERSION = "${env.BUILD_NUMBER}"
     }
     stages {
         stage('Checkout') {
@@ -64,23 +74,43 @@ pipeline {
         stage('Upload to Nexus') {
             steps {
                 script {
-                    nexusArtifactUploader {
-                        nexusVersion: 'nexus3'
-                        protocol: 'http'
-                        nexusUrl: 'http://localhost:8081'
-                        groupId: 'com.gestion.productos'
-                        version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"
-                        repository: 'mvn-repository'
-                        credentialsId: 'Nexus_Password'
-                        artifacts: [
-                            [
-                                artifactId: 'gestion-eventos',
+
+                 pom = readMavenPom file: "pom.xml";
+                    // Find built artifact under target folder
+                 filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    // Print some info from the artifact found
+                 echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    // Extract the path from the File found
+                 artifactPath = filesByGlob[0].path;
+                    // Assign to a boolean response verifying If the artifact name exists
+                 artifactExists = fileExists artifactPath;
+
+                 if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+
+                        nexusArtifactUploader(
+                            nexusVersion: NEXUS_VERSION,
+                            protocol: NEXUS_PROTOCOL,
+                            nexusUrl: NEXUS_URL,
+                            groupId: pom.groupId,
+                            version: ARTIFACT_VERSION,
+                            repository: NEXUS_REPOSITORY,
+                            credentialsId: NEXUS_CREDENTIAL_ID,
+                            artifacts: [
+                                // Artifact generated such as .jar, .ear and .war files.
+                                [artifactId: pom.artifactId,
                                 classifier: '',
-                                file: 'target/gestion-eventos-0.0.1-SNAPSHOT.jar',
-                                type: 'jar'
+                                file: artifactPath,
+                                type: pom.packaging]
                             ]
-                        ]
+                        );
+
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
                     }
+
+
+                 
                 }
 
             }
