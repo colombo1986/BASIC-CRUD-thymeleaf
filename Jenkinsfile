@@ -67,7 +67,7 @@ pipeline {
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     nexusUrl: 'http://localhost:8081',
-                    groupId: 'QA',
+                    groupId: 'com.gestion.productos',
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                     repository: 'mvn-repository',
                     credentialsId: 'Nexus_Password',
