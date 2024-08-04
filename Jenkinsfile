@@ -61,25 +61,28 @@ pipeline {
             }
         }
 
-        stage('Upload Artifact') {
+        stage('Upload to Nexus') {
             steps {
-                nexusArtifactUploader {
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: 'http://localhost:8081',
-                    groupId: 'com.gestion.productos',
-                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'mvn-repository',
-                    credentialsId: 'Nexus_Password',
-                    artifacts: [
-                        {
-                            artifactId: 'gestion-eventos',
-                            classifier: '',
-                            file: 'target/gestion-eventos-0.0.1-SNAPSHOT.jar',
-                            type: 'jar'
-                        }
-                    ]
+                script {
+                    nexusArtifactUploader {
+                        nexusVersion: 'nexus3'
+                        protocol: 'http'
+                        nexusUrl: 'http://localhost:8081'
+                        groupId: 'com.gestion.productos'
+                        version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"
+                        repository: 'mvn-repository'
+                        credentialsId: 'Nexus_Password'
+                        artifacts: [
+                            [
+                                artifactId: 'mi-artefacto',
+                                classifier: '',
+                                file: 'target/nombre-del-artefacto.jar',
+                                type: 'jar'
+                            ]
+                        ]
+                    }
                 }
+
             }
         }
 
