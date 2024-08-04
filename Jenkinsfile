@@ -74,9 +74,9 @@ pipeline {
                         credentialsId: 'Nexus_Password'
                         artifacts: [
                             [
-                                artifactId: 'mi-artefacto',
+                                artifactId: 'gestion-eventos',
                                 classifier: '',
-                                file: 'target/nombre-del-artefacto.jar',
+                                file: 'target/gestion-eventos-0.0.1-SNAPSHOT.jar',
                                 type: 'jar'
                             ]
                         ]
