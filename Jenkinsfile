@@ -33,7 +33,6 @@ pipeline {
 
 
 
-
         stage('Build') {
             steps {
                 // Compila el proyecto usando Maven
@@ -61,6 +60,29 @@ pipeline {
                 sh 'echo "Deploying application..."'
             }
         }
+
+        stage('Upload Artifact') {
+            steps {
+                nexusArtifactUploader {
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: 'http://localhost:8081',
+                    groupId: 'QA',
+                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+                    repository: 'mvn-repository',
+                    credentialsId: 'Nexus_Password',
+                    artifacts: [
+                        {
+                            artifactId: 'gestion-eventos',
+                            classifier: '',
+                            file: 'target/gestion-eventos-0.0.1-SNAPSHOT.jar',
+                            type: 'jar'
+                        }
+                    ]
+                }
+            }
+        }
+
     }
 
 
