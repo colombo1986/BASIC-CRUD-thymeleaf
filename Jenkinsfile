@@ -18,14 +18,15 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "Nexus_Password"
         ARTIFACT_VERSION = "${env.BUILD_NUMBER}"
         
-        }*/
+        }
+        */
         stages {
             stage('Checkout') {
                 steps {
                     // Clona el repositorio desde GitHub
                     git 'https://github.com/colombo1986/BASIC-CRUD-thymeleaf.git'
                 }
-            }
+            
 
         /*stage('SonarQube Analysis') {
             steps {
@@ -113,6 +114,8 @@ pipeline {
             }
         }
     }*/
+
+            }
 
         /*
     post {
