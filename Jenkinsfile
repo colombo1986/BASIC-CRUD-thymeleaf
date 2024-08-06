@@ -2,7 +2,7 @@
 pipeline {
     agent any
 
-    environment {
+    /*environment {
         SLACK_CHANNEL = '#aplicacion-de-eventos'
         JOB_NAME = "${env.JOB_NAME}"
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
@@ -17,16 +17,17 @@ pipeline {
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "Nexus_Password"
         ARTIFACT_VERSION = "${env.BUILD_NUMBER}"
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                // Clona el repositorio desde GitHub
-                git 'https://github.com/colombo1986/BASIC-CRUD-thymeleaf.git'
+        
+        }*/
+        stages {
+            stage('Checkout') {
+                steps {
+                    // Clona el repositorio desde GitHub
+                    git 'https://github.com/colombo1986/BASIC-CRUD-thymeleaf.git'
+                }
             }
-        }
 
-        stage('SonarQube Analysis') {
+        /*stage('SonarQube Analysis') {
             steps {
                 script {
                     def sonarRunner = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
@@ -39,7 +40,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
 
 
@@ -71,7 +72,7 @@ pipeline {
             }
         }
 
-        stage('Upload to Nexus') {
+        /*stage('Upload to Nexus') {
             steps {
                 script {
 
@@ -111,34 +112,34 @@ pipeline {
                 }
             }
         }
-    }
+    }*/
 
-
-post {
-        success {
-            slackSend(channel: env.SLACK_CHANNEL,
-                      color: 'good',
-                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded. Check it out: ${env.BUILD_URL}",
-                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
-        }
-        failure {
-            slackSend(channel: env.SLACK_CHANNEL,
-                      color: 'danger',
-                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed. Check it out: ${env.BUILD_URL}",
-                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
-        }
-        unstable {
-            slackSend(channel: env.SLACK_CHANNEL,
-                      color: 'warning',
-                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' is unstable. Check it out: ${env.BUILD_URL}",
-                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
-        }
-        always {
-            slackSend(channel: env.SLACK_CHANNEL,
-                      color: '#FFFF00',
-                      message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check it out: ${env.BUILD_URL}",
-                      tokenCredentialId: env.SLACK_CREDENTIAL_ID)
-        }
-    }
+        /*
+    post {
+            success {
+                slackSend(channel: env.SLACK_CHANNEL,
+                        color: 'good',
+                        message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded. Check it out: ${env.BUILD_URL}",
+                        tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+            }
+            failure {
+                slackSend(channel: env.SLACK_CHANNEL,
+                        color: 'danger',
+                        message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed. Check it out: ${env.BUILD_URL}",
+                        tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+            }
+            unstable {
+                slackSend(channel: env.SLACK_CHANNEL,
+                        color: 'warning',
+                        message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' is unstable. Check it out: ${env.BUILD_URL}",
+                        tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+            }
+            always {
+                slackSend(channel: env.SLACK_CHANNEL,
+                        color: '#FFFF00',
+                        message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check it out: ${env.BUILD_URL}",
+                        tokenCredentialId: env.SLACK_CREDENTIAL_ID)
+            }
+        }*/
 
 }
