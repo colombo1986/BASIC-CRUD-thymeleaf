@@ -26,6 +26,7 @@ pipeline {
                     // Clona el repositorio desde GitHub
                     git 'https://github.com/colombo1986/BASIC-CRUD-thymeleaf.git'
                 }
+            }
             
 
         /*stage('SonarQube Analysis') {
