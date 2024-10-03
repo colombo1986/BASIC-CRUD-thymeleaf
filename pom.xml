@@ -90,7 +90,7 @@
                 <version>3.4.1</version>
                 <configuration>
                     <to>
-                        <image>cristophervergara/${project.artifactId}:2024</image>
+                        <image>gestioneventos:2024</image>
                     </to>
                 </configuration>
             </plugin>
